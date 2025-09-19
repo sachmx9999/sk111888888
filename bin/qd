@@ -1,0 +1,159 @@
+#!/bin/bash
+. /etc/init.d/functions
+MongoPORT=`netstat -lntup|awk '/:2007/ {print $4}'|awk -F ":" 'NR==1 {print $2}'`
+GMPORT=`netstat -lntup|awk '/7000/ {print $4}'|awk -F ":" 'NR==1 {print $2}'`
+GSPORT=`netstat -lntup|awk '/9000/ {print $4}'|awk -F ":" 'NR==1 {print $2}'`
+GWPORT=`netstat -lntup|awk '{print $4}'|awk -F ":" '/9001$/ {print $NF}'`
+WEBPORT=`netstat -lntup|awk '{print $4}'|awk -F ":" '/80$/ {print $NF}'`
+
+function startmongodb(){
+echo "开始启动MongoDB服务器";
+cd /home/mongodb/ &&\
+./mongod --dbpath=/home/mongodb/data --port 2007 --auth &
+}
+
+function startserver(){
+echo "开始启动一区游戏";
+sleep 2
+cd /home/mt3/ &&\
+sleep 2
+./s.sh &
+echo "一区游戏已经启动";
+sleep 5
+echo "等待10进入游戏";
+}
+echo "所有服务已启动"
+function startserver1(){
+echo "开始启动二区游戏";
+sleep 2
+cd /home/mt4/ &&\
+sleep 2
+./s.sh &
+sleep 1
+echo "二区游戏已经启动";
+cd / &&\
+echo "等待10进入游戏";
+}
+echo "所有服务已启动"
+function checkserver(){
+echo "开始启动三区游戏";
+sleep 2
+cd /home/mt5/ &&\
+sleep 2
+./s.sh &
+sleep 1
+echo "三区游戏已经启动";
+cd / &&\
+echo "等待10进入游戏";
+}
+echo "所有服务已启动"
+
+
+function stopallserver(){
+echo "正在关闭梦幻西游！请稍后！"
+ps aux | grep 'gateserver' |grep -v grep| cut -c 9-15 | xargs kill -9
+sleep   1
+ps aux | grep 'proxyserver' |grep -v grep| cut -c 9-15 | xargs kill -9
+sleep  1
+ps aux | grep 'java' |grep -v grep| cut -c 9-15 | xargs kill -9
+sleep   1
+echo "梦幻西游关闭成功!"
+}
+
+function ljs(){
+kill -9 $(lsof -i:1111 -t)
+kill -9 $(lsof -i:10011 -t)
+kill -9 $(lsof -i:11111 -t)
+kill -9 $(lsof -i:10030 -t)
+kill -9 $(lsof -i:10020 -t)
+echo "关闭一区成功"
+}
+function dk(){
+kill -9 $(lsof -i:2222 -t)
+kill -9 $(lsof -i:10012 -t)
+kill -9 $(lsof -i:12222 -t)
+kill -9 $(lsof -i:10031 -t)
+kill -9 $(lsof -i:10021 -t)
+
+echo "关闭二区成功"
+}
+function ljsc(){
+kill -9 $(lsof -i:3333 -t)
+kill -9 $(lsof -i:10013 -t)
+kill -9 $(lsof -i:13333 -t)
+kill -9 $(lsof -i:10032 -t)
+kill -9 $(lsof -i:10022 -t)
+echo "关闭三区成功"
+}
+function dkc(){
+kill -9 $(lsof -i:5555 -t)
+kill -9 $(lsof -i:10014 -t)
+kill -9 $(lsof -i:14444 -t)
+kill -9 $(lsof -i:10033 -t)
+kill -9 $(lsof -i:10023 -t)
+
+echo "关闭四区成功"
+}
+function zdk(){
+netstat -ntlp
+echo "端口查看成功"
+}
+function bf(){
+echo "开始启动四区游戏";
+sleep 2
+cd /home/mt4/ &&\
+sleep 2
+./qd.sh &
+sleep 1
+echo "四区游戏已经启动";
+cd / &&\
+echo "等待10进入游戏";
+}
+echo "所有服务已启动"
+function btfc(){
+echo "开始启动通用端口";
+sleep 2
+cd /home/mt1/ &&\
+sleep 2
+./qt.sh &
+sleep 1
+echo "通用端口已经启动";
+sleep 5
+echo "等待10，启动其他区";
+}
+rm -f ip
+echo ""
+echo -e "\033[33m=================================================================\033[0m"
+echo -e "\033[36m              欢迎使用  梦幻西游   游戏管理程序                 =\033[0m"
+echo -e "\033[32m        本程序由 软壳源码网：www.ruankor.com 独家提供！         =\033[0m"
+echo -e "\033[33m=================================================================\033[0m"
+echo -e "\033[32m  [1] 启动一区                =                                 =\033[0m"
+echo -e "\033[33m===============================                                 =\033[0m"
+echo -e "\033[32m  [2] 启动二区                =             梦幻西游            =\033[0m"
+echo -e "\033[33m===============================                                 =\033[0m"
+echo -e "\033[32m  [t] 重启服务器后先启动这个    =        2019年2月31日          =\033[0m"
+echo -e "\033[33m===============================                                 =\033[0m"
+echo -e "\033[32m  [5] 关闭一区                =                                 =\033[0m"
+echo -e "\033[32m===============================   [t] 通用(重启服务器之后必须)  =\033[0m"
+echo -e "\033[32m  [6] 关闭二区                = 或者9关闭所有进程之后必须执行t  =\033[0m"
+echo -e "\033[32m===============================                                 =\033[0m"
+echo -e "\033[32m  [7] 主游戏查看          端口=     [9] 关闭所有游戏进程        =\033[0m"
+echo -e "\033[33m=================================================================\033[0m"
+echo -e "\033[32m   请看好功能需要什么功能自己按对应数字回车即可，史诗制作!      =\033[0m"
+echo -e "\033[33m=================================================================\033[0m"
+read num
+
+case "$num" in
+[1] ) (startserver);;
+[2] ) (startserver1);;
+[3] ) (checkserver);;
+[4] ) (bf);;
+[5] ) (ljs);;
+[6] ) (dk);;
+[7] ) (zdk);;
+[9] ) (stopallserver);;
+[a] ) (ljsc);;
+[b] ) (dkc);;
+[t] ) (btfc);;
+*) echo "没什么，退出";;
+esac
